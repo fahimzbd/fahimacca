@@ -170,49 +170,7 @@
     margin-left: auto;
   }
 
-  /* WRITE POST PANEL */
-  .write-section {
-    padding: 0 6% 5rem;
-  }
-  .write-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2.5rem;
-  }
-  .write-panel h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem; color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .write-panel p { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
-  .form-group label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); padding: 0.75rem 1rem;
-    border-radius: 2px; font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem; outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--gold); }
-  .form-group select option { background: var(--surface2); }
-  .form-group textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
-  .btn-submit {
-    background: var(--gold); color: var(--dark);
-    padding: 0.8rem 2rem; border-radius: 2px;
-    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.06em;
-    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s;
-  }
-  .btn-submit:hover { background: var(--gold-light); }
-
-  /* EMPTY STATE */
+  /* FOOTER */
   .empty-blog {
     grid-column: 1 / -1;
     text-align: center; padding: 5rem 2rem;
@@ -220,17 +178,6 @@
   .empty-blog .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
   .empty-blog h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem; }
   .empty-blog p { font-size: 0.9rem; color: var(--muted); }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 2rem; right: 2rem;
-    background: var(--surface); border: 1px solid var(--gold);
-    color: var(--text); padding: 1rem 1.5rem;
-    border-radius: 4px; font-size: 0.88rem;
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.35s ease; z-index: 999;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
 
   /* FOOTER */
   footer {
@@ -296,41 +243,6 @@
   <!-- Posts rendered by JS -->
 </div>
 
-<!-- WRITE SECTION -->
-<div class="write-section">
-  <div class="write-panel">
-    <h3>✍️ Write a New Blog Post</h3>
-    <p>Add your thoughts, insights, and expertise below. Your post will appear in the blog grid above.</p>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Post Title *</label>
-        <input type="text" id="postTitle" placeholder="e.g. Understanding UK VAT Returns">
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <select id="postCat">
-          <option value="vat">VAT & Tax</option>
-          <option value="accounting">Accounting</option>
-          <option value="finance">Finance</option>
-          <option value="career">Career</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Short Excerpt (shown in card preview)</label>
-      <input type="text" id="postExcerpt" placeholder="One-line summary of your post...">
-    </div>
-    <div class="form-group">
-      <label>Full Content *</label>
-      <textarea id="postContent" placeholder="Write your full blog post here..."></textarea>
-    </div>
-    <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
-      <button class="btn-submit" onclick="addPost()">Publish Post →</button>
-      <span style="font-size:0.78rem; color:var(--muted);">Posts are saved in your browser session</span>
-    </div>
-  </div>
-</div>
-
 <!-- FOOTER -->
 <footer>
   <p>© 2026 Fahim Ahmed. All rights reserved.</p>
@@ -339,8 +251,6 @@
     <a href="https://www.linkedin.com/in/fahim-ahmedz/" target="_blank">LinkedIn →</a>
   </div>
 </footer>
-
-<div class="toast" id="toast">✅ Post published successfully!</div>
 
 <script>
   // Sample starter posts
@@ -380,8 +290,7 @@
     }
   ];
 
-  let posts = JSON.parse(sessionStorage.getItem('fahim_posts') || 'null') || [...starterPosts];
-  let nextId = Math.max(...posts.map(p => p.id)) + 1;
+  let posts = [...starterPosts];
   let activeFilter = 'all';
 
   function catLabel(cat) {
@@ -395,9 +304,9 @@
 
     if (filtered.length === 0) {
       grid.innerHTML = `<div class="empty-blog">
-        <div class="empty-icon">✍️</div>
-        <h3>No posts yet in this category</h3>
-        <p>Write your first post below and it'll appear here.</p>
+        <div class="empty-icon">📝</div>
+        <h3>No posts in this category yet</h3>
+        <p>Check back soon for new articles.</p>
       </div>`;
       return;
     }
@@ -431,53 +340,7 @@
     renderPosts();
   }
 
-  function addPost() {
-    const title = document.getElementById('postTitle').value.trim();
-    const cat = document.getElementById('postCat').value;
-    const excerpt = document.getElementById('postExcerpt').value.trim();
-    const content = document.getElementById('postContent').value.trim();
-
-    if (!title || !content) {
-      alert('Please fill in the title and content fields.');
-      return;
-    }
-
-    const icons = { vat: '🧾', accounting: '📊', finance: '📈', career: '🎯' };
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const now = new Date();
-    const date = `${months[now.getMonth()]} ${now.getFullYear()}`;
-
-    const newPost = {
-      id: nextId++,
-      title, cat, excerpt: excerpt || content.slice(0, 120) + '...',
-      content, date,
-      readTime: Math.max(1, Math.ceil(content.split(' ').length / 200)) + ' min read',
-      featured: false,
-      icon: icons[cat] || '📝'
-    };
-
-    posts.unshift(newPost);
-    sessionStorage.setItem('fahim_posts', JSON.stringify(posts));
-
-    // Clear form
-    document.getElementById('postTitle').value = '';
-    document.getElementById('postExcerpt').value = '';
-    document.getElementById('postContent').value = '';
-
-    // Re-render
-    activeFilter = 'all';
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.filter-btn')[0].classList.add('active');
-    renderPosts();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Toast
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  // Map post id 1 to a dedicated article page
+  // Map post id to dedicated article page
   const postPages = {
     1: 'blog_post_uk_vat.html'
   };

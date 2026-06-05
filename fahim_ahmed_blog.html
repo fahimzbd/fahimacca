@@ -134,7 +134,18 @@
     border-bottom: 1px solid var(--border);
     position: relative; overflow: hidden;
   }
-  .post-img.featured-img { aspect-ratio: 21/9; font-size: 4rem; }
+  .post-img.featured-img { aspect-ratio: 21/9; }
+  .post-img img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .post-card:hover .post-img img { transform: scale(1.04); }
+  .post-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%);
+    z-index: 1;
+  }
   .post-img-bg {
     position: absolute; inset: 0;
     background: linear-gradient(135deg, var(--surface) 0%, #1a1508 100%);
@@ -260,33 +271,22 @@
       title: "Understanding UK VAT Returns: A Practical Guide for Small Businesses",
       cat: "vat",
       excerpt: "Filing UK VAT returns doesn't have to be daunting. Here's everything you need to know to stay compliant.",
-      content: "Full content goes here.",
+      content: "",
       date: "May 2026",
-      readTime: "5 min read",
+      readTime: "8 min read",
       featured: true,
-      icon: "🧾"
-    },
-    {
-      id: 2,
-      title: "BD Corporate Tax Law: Key Changes in 2025-26",
-      cat: "vat",
-      excerpt: "A breakdown of the most important updates to Bangladeshi Corporate Tax that every accountant should know.",
-      content: "Full content goes here.",
-      date: "Apr 2026",
-      readTime: "4 min read",
-      featured: false,
-      icon: "📋"
+      img: "https://www.fleximize.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcThJIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--e2c9c735fd7dd92d2b3f60fa98cec0f3e2e254f1/VAT-Return.jpg"
     },
     {
       id: 3,
       title: "How I Use Xero to Manage Multi-Currency Accounts",
       cat: "accounting",
-      excerpt: "Practical tips from handling BD taka and GBP accounts simultaneously in Xero.",
-      content: "Full content goes here.",
+      excerpt: "Practical tips from handling GBP and BDT accounts simultaneously in Xero — from setup to reconciliation.",
+      content: "",
       date: "Mar 2026",
-      readTime: "3 min read",
+      readTime: "6 min read",
       featured: false,
-      icon: "💱"
+      img: "https://www.xero.com/content/dam/xero/pilot-images/multi-currency/multi-currency-hero.1646789096839.png"
     }
   ];
 
@@ -316,8 +316,10 @@
            style="animation-delay:${i * 0.08}s"
            onclick="openPost(${post.id})">
         <div class="post-img ${post.featured && i === 0 ? 'featured-img' : ''}">
-          <div class="post-img-bg"></div>
-          <span class="post-img-icon">${post.icon || '📝'}</span>
+          ${post.img
+            ? `<img src="${post.img}" alt="${post.title}" onerror="this.style.display='none'"><div class="post-img-overlay"></div>`
+            : `<div class="post-img-bg"></div><span class="post-img-icon">${post.icon || '📝'}</span>`
+          }
         </div>
         <div class="post-body">
           <div class="post-meta">
@@ -342,7 +344,8 @@
 
   // Map post id to dedicated article page
   const postPages = {
-    1: 'blog_post_uk_vat.html'
+    1: 'blog_post_uk_vat.html',
+    3: 'blog_post_xero.html'
   };
 
   function openPost(id) {
